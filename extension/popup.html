@@ -1,0 +1,103 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;width:340px;background:#12151a;color:#e9edf1;font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{padding:14px}
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#fff;
+        background:linear-gradient(135deg,#7c5cff,#2f9bff);box-shadow:0 2px 12px #5b6cff66;flex:none}
+  .ttl{flex:1;min-width:0}h1{font-size:15px;margin:0}
+  .sub{color:#8c98a4;font-size:12px;display:flex;align-items:center;gap:6px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#6b7580;flex:none}
+  .dot.ok{background:#3ddc84;box-shadow:0 0 8px #3ddc8488}.dot.warn{background:#f0b429}
+  .icon{background:none;border:0;color:#9aa6b2;font-size:18px;cursor:pointer;border-radius:9px;width:32px;height:32px;line-height:1}
+  .icon:hover{background:#ffffff12;color:#fff}
+  .banner{margin-bottom:12px;padding:9px 11px;border-radius:10px;background:#f0b42918;border:1px solid #f0b42955;color:#f7d27a;font-size:12px}
+  .lab{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#6f7b87;margin:12px 0 6px;display:flex;justify-content:space-between;align-items:center}
+  .lab a{color:#7cc0ff;text-transform:none;letter-spacing:0;font-size:12px;cursor:pointer;text-decoration:none}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:#1b2027;border:1px solid #ffffff14;color:#cfd7df;cursor:pointer;font-size:12.5px;user-select:none}
+  .chip i{width:8px;height:8px;border-radius:50%;display:block}
+  .chip:hover{background:#222932}
+  .chip.sel{background:#2f9bff22;border-color:#2f9bff88;color:#fff}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .card{display:flex;flex-direction:column;gap:2px;padding:10px 11px;border-radius:12px;background:#1b2027;border:1px solid #ffffff12;cursor:pointer;text-align:left;color:inherit;font:inherit}
+  .card:hover{background:#222932;border-color:#ffffff24}
+  .card b{font-size:13px}.card span{color:#8c98a4;font-size:11.5px}.card .ic{font-size:20px;margin-bottom:2px}
+  .back{background:none;border:0;color:#7cc0ff;cursor:pointer;font:inherit;padding:0;margin-bottom:8px}
+  .formtitle{font-size:16px;font-weight:700;margin:0 0 10px;display:flex;gap:8px;align-items:center}
+  label.f{display:block;font-size:12px;color:#8c98a4;margin:10px 0 4px}
+  input[type=text],select,textarea{width:100%;padding:9px 11px;border-radius:10px;border:1px solid #ffffff1f;background:#0d1014;color:#fff;font:14px system-ui,sans-serif;outline:none}
+  textarea{resize:vertical;min-height:70px}
+  input:focus,select:focus,textarea:focus{border-color:#5b8cff}
+  select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#8c98a4 50%),linear-gradient(135deg,#8c98a4 50%,transparent 50%);
+         background-position:calc(100% - 17px) 55%,calc(100% - 12px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}
+  .check{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:#aab4be;cursor:pointer;user-select:none}
+  button.big{width:100%;margin-top:14px;border:0;border-radius:11px;padding:11px;font:600 14px system-ui,sans-serif;color:#fff;cursor:pointer;
+             background:linear-gradient(135deg,#7c5cff,#2f9bff)}
+  button.big:hover{filter:brightness(1.1)}button.big:disabled{opacity:.4;cursor:default;filter:none}
+  button.ghost{background:#2a323a}
+  .note{margin-top:8px;font-size:12px;color:#8c98a4;min-height:16px}.note.bad{color:#ff8b8b}
+  .status{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#1b2027;border:1px solid #ffffff12;margin-bottom:6px}
+  input.code{letter-spacing:4px;font-size:16px}
+  .box{background:#1b2027;border:1px solid #ffffff12;border-radius:12px;padding:10px 12px;margin-top:8px}
+  .url{font:600 13px ui-monospace,monospace;color:#7cc0ff;word-break:break-all}
+  .big2{font:700 22px ui-monospace,monospace;letter-spacing:5px;margin-top:2px}
+  .link{background:none;border:0;color:#8c98a4;text-decoration:underline;cursor:pointer;font:inherit;margin-top:8px;padding:4px 0}
+  ol{margin:14px 0 0;padding-left:18px;color:#8c98a4;font-size:12px}
+  code{background:#1b2027;padding:1px 5px;border-radius:5px;color:#b8c4d0}
+  [hidden]{display:none!important}
+</style>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">g</div>
+    <div class="ttl"><h1>g-script</h1><div class="sub"><span class="dot" id="dot"></span><span id="topSub">Checking…</span></div></div>
+    <button class="icon" id="gear" title="Setup and phone">⚙</button>
+  </div>
+  <div class="banner" id="banner" hidden></div>
+
+  <div id="viewMain">
+    <div class="lab">AI <a id="openAi">Open ↗</a></div>
+    <div class="chips" id="ais"></div>
+    <div class="lab">Create</div>
+    <div class="grid" id="actions"></div>
+  </div>
+
+  <div id="viewForm" hidden>
+    <button class="back" id="back">← Back</button>
+    <div class="formtitle"><span id="fIcon"></span><span id="fTitle"></span></div>
+    <div id="fFields"></div>
+    <label class="check"><input type="checkbox" id="fresh">Start in a new chat</label>
+    <div class="note" id="where"></div>
+    <button class="big" id="go">Generate</button>
+    <div class="note" id="note"></div>
+  </div>
+
+  <div id="viewSetup" hidden>
+    <button class="back" id="back2">← Back</button>
+    <div class="status"><span class="dot" id="dot2"></span><span id="st">Checking…</span></div>
+    <label class="f" for="port">Port (only change this if you started g-script on another one)</label>
+    <input type="text" id="port" placeholder="8765" inputmode="numeric">
+    <button class="big" id="reconnect">Reconnect</button>
+
+    <div id="phoneSec" hidden>
+      <div class="lab" style="margin-top:18px">📱 Phone app</div>
+      <div class="sub" id="phoneSub">Build from your phone on the same Wi-Fi.</div>
+      <button class="big ghost" id="phoneBtn">Enable phone app</button>
+      <div class="box" id="phoneBox" hidden>
+        <div class="sub">Open on your phone:</div><div class="url" id="phoneUrl"></div>
+        <div class="sub" style="margin-top:8px">Then enter this code:</div><div class="big2" id="phoneCode"></div>
+        <button class="link" id="copyUrl">Copy link</button> <button class="link" id="unpair">Unpair all phones</button>
+      </div>
+    </div>
+    <ol>
+      <li>Open the g-script app on your PC</li>
+      <li>It connects by itself, nothing to type</li>
+      <li>Pick an AI and an action here</li>
+    </ol>
+  </div>
+</div>
+<script src="sites.js"></script>
+<script src="prompts.js"></script>
+<script src="popup.js"></script>

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>g-script</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b6cff'/%3E%3Ctext x='16' y='23' font-size='20' font-family='sans-serif' font-weight='700' fill='white' text-anchor='middle'%3Eg%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--bg:#0f1216;--card:#171b21;--card2:#1f252d;--line:#ffffff14;--txt:#e9edf1;--mut:#8c98a4;--ok:#3ddc84;--warn:#f0b429;--bad:#ff6b6b;--g:linear-gradient(135deg,#7c5cff,#2f9bff)}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:460px;margin:0 auto;padding:18px 16px 28px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .logo{width:42px;height:42px;border-radius:12px;background:var(--g);display:grid;place-items:center;font-weight:700;font-size:22px;color:#fff;box-shadow:0 4px 16px #5b6cff55}
+  header h1{margin:0;font-size:19px}header span{color:var(--mut);font-size:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+  .card h2{margin:0 0 8px;font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:#6f7b87;font-weight:600}
+  .row{display:flex;align-items:center;gap:10px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#6b7580;flex:none}
+  .dot.ok{background:var(--ok);box-shadow:0 0 10px #3ddc8488}.dot.warn{background:var(--warn)}
+  .big{font-size:16px;font-weight:600}.mut{color:var(--mut);font-size:13px}
+  .steps{list-style:none;margin:0;padding:0}
+  .steps li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid #ffffff0d}
+  .steps li:first-child{border-top:0}
+  .tick{width:22px;height:22px;border-radius:50%;border:2px solid #3a434d;flex:none;display:grid;place-items:center;font-size:13px;margin-top:1px}
+  .tick.on{background:var(--ok);border-color:var(--ok);color:#06210f;font-weight:700}
+  .steps b{display:block}.steps small{color:var(--mut)}
+  .code{font:700 26px ui-monospace,monospace;letter-spacing:6px;margin:4px 0}
+  .path{font:12px ui-monospace,monospace;background:#0d1014;border:1px solid var(--line);border-radius:10px;padding:8px 10px;word-break:break-all;margin:6px 0}
+  button{border:0;border-radius:11px;padding:10px 14px;font:600 14px system-ui,sans-serif;color:#fff;background:#2a323a;cursor:pointer}
+  button:hover{filter:brightness(1.15)}button.pri{background:var(--g)}button.danger{background:#6b2d2d}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .ais{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  a.ai{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--txt);text-decoration:none;font-weight:600}
+  a.ai:hover{background:#262d36}a.ai i{width:9px;height:9px;border-radius:50%;display:block}
+  pre{margin:0;max-height:150px;overflow:auto;font:11.5px/1.5 ui-monospace,monospace;color:#9aa6b2;white-space:pre-wrap;word-break:break-word}
+  .gone{text-align:center;padding:40px 10px}.gone .logo{margin:0 auto 12px}
+    canvas.qr{display:block;width:172px;height:172px;image-rendering:pixelated;border-radius:10px;margin:8px 0;background:#fff}
+  .opt{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-top:10px}
+  .opt b{display:block;margin-bottom:2px}.tag{font-size:11px;color:#7cc0ff;font-weight:600;margin-left:6px}
+  .warn{color:#f7d27a;font-size:12px;margin-top:10px}.err{color:var(--bad);font-size:13px;margin-top:6px}
+  .small{font:600 11px ui-monospace,monospace;letter-spacing:2px}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap" id="main">
+  <header><div class="logo">g</div><div><h1>g-script</h1><span id="ver"></span></div></header>
+
+  <div class="card" id="pairreq" hidden>
+    <h2>📱 A phone wants to connect</h2>
+    <div id="pairlist"></div>
+  </div>
+
+  <div class="card" id="setup">
+    <h2>Get started</h2>
+    <ul class="steps">
+      <li><div class="tick" id="t1"></div><div><b>Roblox Studio</b><small id="s1">Open a place and turn on MCP</small></div></li>
+      <li><div class="tick" id="t2"></div><div><b>Browser extension</b><small id="s2">Install it once, then open an AI chat</small></div></li>
+      <li><div class="tick" id="t3"></div><div><b>Build</b><small id="s3">Use the g-script menu in your browser, or open an AI below</small></div></li>
+    </ul>
+  </div>
+
+  <div class="card" id="extcard">
+    <h2>Browser extension</h2>
+    <div class="mut">First time only: in Chrome, Edge or Brave open <b>chrome://extensions</b>, turn on <b>Developer mode</b>, click <b>Load unpacked</b> and pick this folder:</div>
+    <div class="path" id="extpath"></div>
+    <div class="btns"><button id="copyPath">Copy folder path</button></div>
+    <div class="mut" style="margin-top:12px">That's it: the extension connects by itself, nothing to type.</div>
+  </div>
+
+  <div class="card">
+    <h2>Open an AI</h2>
+    <div class="ais" id="ais"></div>
+    <div class="btns"><button id="forgetExt" hidden>Forget the connected browser extension</button></div>
+  </div>
+
+  <div class="card" id="phonecard">
+    <h2>Phone</h2>
+    <div class="row"><span class="dot" id="pdot"></span><span class="big" id="pstate">Off</span></div>
+    <div class="btns"><button class="pri" id="ptoggle">Turn on</button><button id="preset" hidden>Unpair phones</button></div>
+    <div id="pinfo" hidden>
+      <div class="mut" style="margin-top:10px">On the same Wi-Fi, scan this with your phone camera and you're connected. Or open the link below on your phone and tap Allow here when it asks.</div>
+      <canvas class="qr" id="lanqr"></canvas>
+      <div class="path" id="lanurl"></div>
+      <div class="btns"><button id="copyLan">Copy link</button></div>
+      <div class="warn">Same Wi-Fi only, and the link isn't encrypted, so use a network you trust. Every new phone needs your Allow. QR links work once, then change.</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>Activity</h2><pre id="log">Starting…</pre></div>
+  <div class="btns" style="justify-content:center"><button class="danger" id="quit">Quit g-script</button></div>
+</div>
+
+<div class="wrap gone" id="gone" hidden>
+  <div class="logo">g</div><h1>g-script stopped</h1><p class="mut">You can close this window. Open g-script again from your apps.</p>
+</div>
+
+<script src="/ui/qr.js"></script>
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const AIS = [["Claude","https://claude.ai/new","#d97757"],["ChatGPT","https://chatgpt.com/","#10a37f"],["DeepSeek","https://chat.deepseek.com/","#4d6bfe"],["Gemini","https://gemini.google.com/app","#8ab4f8"]];
+AIS.forEach(([n,u,c]) => { const a=document.createElement("a"); a.className="ai"; a.href=u; a.target="_blank"; a.rel="noopener"; const i=document.createElement("i"); i.style.background=c; a.append(i,document.createTextNode(n)); $("#ais").append(a); });
+
+const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json", "X-GScript-UI": "1" }, body: JSON.stringify(body || {}) }).then((r) => r.json());
+const tick = (id, on) => { const t = $(id); t.classList.toggle("on", on); t.textContent = on ? "✓" : ""; };
+let phone = null, failures = 0;
+
+async function refresh() {
+  let s;
+  try { s = await (await fetch("/ui/state")).json(); failures = 0; }
+  catch (e) { if (++failures >= 3) { $("#main").hidden = true; $("#gone").hidden = false; } return; }
+  $("#ver").textContent = "version " + s.version;
+  const studio = s.studio.connected, ext = s.ext && s.ext.connected;
+  tick("#t1", studio); tick("#t2", ext); tick("#t3", studio && ext && s.ext.active);
+  $("#s1").textContent = studio ? `Connected (${s.studio.tools} tools)` : "Open a place and turn on MCP (Assistant > ... > Manage MCP Servers)";
+  $("#s2").textContent = ext ? `Connected on ${s.ext.site}` : "Install it once, then open an AI chat tab";
+  $("#s3").textContent = (studio && ext) ? (s.ext.active ? "Running. Tell the AI what to build." : "Click Start g-script in the AI tab, or use the g-script menu") : "Use the g-script menu in your browser, or open an AI below";
+  $("#extpath").textContent = s.extension_path; $("#forgetExt").hidden = !s.ext_origin;
+  renderPairing(s.pairing || []);
+  $("#extcard").hidden = !!ext;
+  renderPhone(s.phone);
+  const log = $("#log"), near = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
+  log.textContent = s.log.length ? s.log.join("\n") : "Nothing yet.";
+  if (near) log.scrollTop = log.scrollHeight;
+}
+
+$("#copyPath").onclick = () => navigator.clipboard.writeText($("#extpath").textContent).then(() => { $("#copyPath").textContent = "Copied!"; setTimeout(() => ($("#copyPath").textContent = "Copy folder path"), 1200); });
+let pairKey = "";
+function renderPairing(list) {
+  $("#pairreq").hidden = !list.length;
+  const key = list.map((x) => x.id).join(",");
+  if (key === pairKey) return;
+  pairKey = key;
+  const box = $("#pairlist"); box.innerHTML = "";
+  list.forEach((p) => {
+    const w = document.createElement("div"); w.className = "code"; w.style.fontSize = "28px"; w.textContent = p.words;
+    const m = document.createElement("div"); m.className = "mut"; m.textContent = "Tap Allow only if your phone shows these same two words. " + (p.ua ? "(" + p.ua.slice(0, 48) + ")" : "");
+    const row = document.createElement("div"); row.className = "btns";
+    const yes = document.createElement("button"); yes.className = "pri"; yes.textContent = "Allow";
+    const no = document.createElement("button"); no.textContent = "Deny";
+    yes.onclick = async () => { await post("/ui/pair/decide", { id: p.id, approve: true }); refresh(); };
+    no.onclick = async () => { await post("/ui/pair/decide", { id: p.id, approve: false }); refresh(); };
+    row.append(yes, no); box.append(w, m, row);
+  });
+}
+$("#forgetExt").onclick = async () => { await post("/ui/ext/forget"); refresh(); };
+
+const qrCache = {};
+function drawQR(id, text) {
+  const c = $(id);
+  if (!text) { c.hidden = true; return; }
+  c.hidden = false;
+  if (qrCache[id] === text) return;
+  qrCache[id] = text;
+  try { GS_QR.draw(c, text, 5); } catch (e) { c.hidden = true; }
+}
+const group = (c) => (c || "").replace(/(.{4})(?=.)/g, "$1-");
+const copy = (btn, text) => navigator.clipboard.writeText(text).then(() => { const o = btn.textContent; btn.textContent = "Copied!"; setTimeout(() => (btn.textContent = o), 1200); });
+$("#copyLan").onclick = (e) => copy(e.target, phone.lan.link);
+
+function renderPhone(p) {
+  phone = p;
+  if (!p) return;
+  const on = p.enabled;
+  $("#pdot").className = "dot " + (on ? "ok" : "");
+  $("#pstate").textContent = on ? (p.devices ? `On, ${p.devices} paired` : "On, no phone paired yet") : "Off";
+  $("#pinfo").hidden = !on; $("#preset").hidden = !on || !p.devices;
+  $("#ptoggle").textContent = on ? "Turn off" : "Turn on";
+  if (!on) return;
+  $("#lanurl").textContent = p.lan.url; drawQR("#lanqr", p.lan.link);
+}
+$("#ptoggle").onclick = async () => { await post("/ui/phone", { enable: !(phone && phone.enabled) }); refresh(); };
+$("#preset").onclick = async () => { await post("/ui/phone/reset"); refresh(); };
+$("#quit").onclick = async () => { if (confirm("Quit g-script? The browser extension and phone will stop working until you open it again.")) { await post("/ui/quit"); $("#main").hidden = true; $("#gone").hidden = false; setTimeout(() => window.close(), 800); } };
+
+setInterval(refresh, 1500); refresh();
+setInterval(() => post("/ui/ping").catch(() => {}), 5000); post("/ui/ping").catch(() => {});
+</script>
+</body>
+</html>
