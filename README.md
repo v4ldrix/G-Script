@@ -37,9 +37,7 @@ at `chrome://extensions` (Developer mode → Load unpacked) → open an AI chat 
 | `tests/` | `python -m unittest discover -s tests -t .` (also needs Node; QR tests use OpenCV if present) |
 
 ## Status
-Tested against a fake Studio and in automated tests. Real Studio, the chat sites' page layouts (`extension/adapters.js`),
-Windows/macOS installers and the Android app (written without a compiler) have had little or no real-world testing:
-issues and pull requests welcome.
+Tested against a real machine, macos yet to be tested
 
 Roblox Studio's MCP launch details on Linux (Vinegar/Wine) are the most likely thing to need a tweak:
 the terminal (`./start.sh`) lists exactly what it tried.
